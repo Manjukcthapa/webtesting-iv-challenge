@@ -1,35 +1,35 @@
 const db = require('../data/dbconfig.js');
 
 module.exports = {
-  insert,
-  update,
-  remove,
-  getAll,
-  findById,
+    add,
+    findById,
+    find,
+    findBy,
+    destroy
 };
 
-function insert(user) {
-  return db('user')
-    .insert(user, 'id')
-    .then(ids => {
-      return db('user')
-        .where({ id: ids[0] })
-        .first();
-    });
+
+const table = db("user");
+
+function find() {
+  return table.select("name",  "id");
 }
 
-async function update(id, changes) {
-  return undefined;
-}
-
-function remove(id) {
-  return null;
-}
-
-function getAll() {
-  return db('user');
+function findBy(filter) {
+  return table.where(filter);
 }
 
 function findById(id) {
-  return null;
+  return table.where({ id });
+}
+
+function add(user) {
+  return table.insert(user).then(ids => {
+    const [id] = ids;
+    return findById(id);
+  });
+}
+
+function destroy(id) {
+  return table.where(id).del();
 }
